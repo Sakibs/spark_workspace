@@ -1,0 +1,20 @@
+val G = GraphLoader.edgeListFile(sc, "workspace/fbdata/fb_comb.txt")
+
+
+val kNum = 5
+
+var degreeGraph = graph.outerJoinVertices(graph.degrees) {(vid, vd, degree) => degree.getOrElse(0)}.cache()
+do {
+	val subGraph = degreeGraph.subgraph(
+		vpred = (vid, degree) => degree >= kNum
+	).cache()
+
+	val newDegreeGraph = subGraph.degrees
+
+	degreeGraph = subGraph.outerJoinVertices(newDegreeGraph) {
+		(vid, vd, degree) => degree.getOrElse(0)
+	}.cache()
+
+	degreeGraph = graph.outerJoinVertices(graph.degrees) {(vid, vd, degree) => degree.getOrElse(0)}.cache()
+	isConverged = check(degreeGraph)
+} while(isConverged == false)

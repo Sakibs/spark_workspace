@@ -7,24 +7,31 @@ from pyspark.mllib.recommendation import Rating
 conf = SparkConf().setMaster("local").setAppName("Collaborative Filtering")
 sc = SparkContext(conf = conf)
 
-datapath = '/home/sakib/spark-1.3.1/spark_workspace/data/test.data'
+datapath = 'spark_workspace/data/test.data'
 
 data = sc.textFile(datapath)
 ratings = data.map(lambda l: l.split(',')).map(lambda l: Rating(int(l[0]), int(l[1]), float(l[2])))
 
+print "--- Training"
+
 rank = 10
-numIterations = 20
+numIterations = 100
 model = ALS.train(ratings, rank, numIterations)
+
+print "--- Predicting"
 
 testdata = ratings.map(lambda l: (l[0], l[1]))
 predictions = model.predictAll(testdata).map(lambda l: ((l[0], l[1]), l[2]))
+ratesAndPreds = ratings.map(lambda r: ((r[0], r[1]), r[2])).join(predictions)
+MSE = ratesAndPreds.map(lambda r: (r[1][0] - r[1][1])**2).reduce(lambda x, y: x + y)/ratesAndPreds.count()
+print("Mean Squared Error = " + str(MSE))
 
 """
 import org.apache.spark.mllib.recommendation.ALS
 import org.apache.spark.mllib.recommendation.Rating
 
 // Load and parse the data
-val data = sc.textFile("mllib/data/als/test.data")
+val data = sc.textFile("spark_workspace/data/test.data")
 val ratings = data.map(_.split(',') match {
     case Array(user, item, rate) =>  Rating(user.toInt, item.toInt, rate.toDouble)
 })
