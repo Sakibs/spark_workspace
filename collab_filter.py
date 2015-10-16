@@ -7,7 +7,7 @@ from pyspark.mllib.recommendation import Rating
 conf = SparkConf().setMaster("local").setAppName("Collaborative Filtering")
 sc = SparkContext(conf = conf)
 
-datapath = 'spark_workspace/data/test.data'
+datapath = 'spark_workspace/data/sample/test.data'
 
 data = sc.textFile(datapath)
 ratings = data.map(lambda l: l.split(',')).map(lambda l: Rating(int(l[0]), int(l[1]), float(l[2])))
@@ -15,7 +15,7 @@ ratings = data.map(lambda l: l.split(',')).map(lambda l: Rating(int(l[0]), int(l
 print "--- Training"
 
 rank = 10
-numIterations = 100
+numIterations = 1
 model = ALS.train(ratings, rank, numIterations)
 
 print "--- Predicting"

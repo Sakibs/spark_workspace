@@ -1,0 +1,214 @@
+Stack crash
+
+
+at scala.collection.immutable.List.foreach(List.scala:318)
+at org.apache.spark.rdd.RDD.doCheckpoint(RDD.scala:1320)
+at org.apache.spark.rdd.RDD$$anonfun$doCheckpoint$1.apply(RDD.scala:1320)
+at org.apache.spark.rdd.RDD$$anonfun$doCheckpoint$1.apply(RDD.scala:1320)
+at scala.collection.immutable.List.foreach(List.scala:318)
+at org.apache.spark.rdd.RDD.doCheckpoint(RDD.scala:1320)
+at org.apache.spark.rdd.RDD$$anonfun$doCheckpoint$1.apply(RDD.scala:1320)
+at org.apache.spark.rdd.RDD$$anonfun$doCheckpoint$1.apply(RDD.scala:1320)
+at scala.collection.immutable.List.foreach(List.scala:318)
+at org.apache.spark.rdd.RDD.doCheckpoint(RDD.scala:1320)
+at org.apache.spark.rdd.RDD$$anonfun$doCheckpoint$1.apply(RDD.scala:1320)
+at org.apache.spark.rdd.RDD$$anonfun$doCheckpoint$1.apply(RDD.scala:1320)
+at scala.collection.immutable.List.foreach(List.scala:318)
+
+
+
+
+
+
+
+// graphx example
+
+import org.apache.spark._
+import org.apache.spark.graphx._
+// To make some of the examples work we will also need RDD
+import org.apache.spark.rdd.RDD
+
+
+val graph = GraphLoader.edgeListFile(sc, "/Users/sakib/Documents/project_2_data/eff_graph_valid_actors_15.txt")
+val ranks = graph.pageRank(0.0001).vertices
+val users = sc.textFile("/Users/sakib/Documents/project_2_data/actor_id_15.txt").map { line => 
+val fields = line.split("\t")
+(fields(0).toLong, fields(1))
+}
+val ranksByUsername = users.join(ranks).map { case (id, (username, rank)) => (username, rank) }
+println(ranksByUsername.collect().mkString("\n"))
+
+
+
+var id = sc.textFile("spark_workspace/data/sample/id.txt")
+var maps = sc.textFile("spark_workspace/data/sample/maps.txt").map(_.split(" ")).map( c => (c(0), c(1).toInt))
+
+
+
+class Test(f: Int => Int) { def getf: Int => Int = f }
+var mt = new Test(x => x+1)
+mt.getf(10)
+
+import scala.reflect.ClassTag
+class Test[U: ClassTag, T: ClassTag](f: T => U) { def getf: T => U = f }
+var mt = new Test((x:Int) => x+1)
+mt.getf(10)
+mt.getClass.getName
+var a = Array[Test[_, _]]()
+
+
+r.dependencies(0).rdd.collect()
+
+
+(12) MappedRDD[8] at map at <console>:16 []
+ |   MappedRDD[7] at map at <console>:16 []
+ |   MappedRDD[6] at map at <console>:16 []
+ |   UnionRDD[5] at union at <console>:16 []
+ |   MappedRDD[1] at map at <console>:14 []
+ |   ParallelCollectionRDD[0] at parallelize at <console>:12 []
+ |   UnionRDD[4] at union at <console>:16 []
+ |   ParallelCollectionRDD[2] at parallelize at <console>:12 []
+ |   ParallelCollectionRDD[3] at parallelize at <console>:12 []
+
+
+
+
+ (4) MappedValuesRDD[44] at mapValues at <console>:18 []
+ |  MappedValuesRDD[43] at mapValues at <console>:17 []
+ |  MappedValuesRDD[42] at mapValues at <console>:18 []
+ |  MappedValuesRDD[41] at mapValues at <console>:17 []
+ |  MappedValuesRDD[40] at mapValues at <console>:18 []
+ |  MappedValuesRDD[39] at mapValues at <console>:17 []
+ |  ShuffledRDD[38] at reduceByKey at <console>:14 []
+ +-(4) UnionRDD[37] at union at <console>:14 []
+    |  MappedRDD[33] at map at <console>:12 []
+    |  MappedRDD[32] at map at <console>:12 []
+    |  spark_workspace/data/sample/maps.txt MappedRDD[31] at textFile at <console>:12 []
+    |  spark_workspace/data/sample/maps.txt HadoopRDD[30] at textFile at <console>:12 []
+    |  MappedValuesRDD[36] at mapValues at <console>:14 []
+    |  Mapp...
+
+(4) ShuffledRDD[38] at reduceByKey at <console>:14 []
+ +-(4) UnionRDD[37] at union at <console>:14 []
+    |  MappedRDD[33] at map at <console>:12 []
+    |  MappedRDD[32] at map at <console>:12 []
+    |  spark_workspace/data/sample/maps.txt MappedRDD[31] at textFile at <console>:12 []
+    |  spark_workspace/data/sample/maps.txt HadoopRDD[30] at textFile at <console>:12 []
+    |  MappedValuesRDD[36] at mapValues at <console>:14 []
+    |  MappedRDD[33] at map at <console>:12 []
+    |  MappedRDD[32] at map at <console>:12 []
+    |  spark_workspace/data/sample/maps.txt MappedRDD[31] at textFile at <console>:12 []
+    |  spark_workspace/data/sample/maps.txt HadoopRDD[30] at textFile at <console>:12 []
+
+
+
+
+
+
+
+var t1 = sc.parallelize(Array(1,2,3))
+t1: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[9] at parallelize at <console>:13
+
+t1 = t1.union(t1)
+// t1: org.apache.spark.rdd.RDD[Int] = UnionRDD[10] at union at <console>:15
+
+t1.collect()
+// res88: Array[Int] = Array(1, 2, 3, 1, 2, 3)
+
+for(i <- 1 to 10) {
+ t1 = t1.map(x => x+1)
+ }
+
+t1.collect()
+//res90: Array[Int] = Array(11, 12, 13, 11, 12, 13)
+
+var g = rddGraph(t1)
+
+lz77_compress(g.reverse)
+
+
+
+
+
+
+
+class DependencyContainer() {
+  private var dependencies: Array(Dependency[RDD[_]]) = None
+  private var compressed: Array[(Int, Int, Dependency[RDD[_]])] = None
+
+  // function to compress a repetitive dependency tree
+  def lz77_compress(arr: Array(Dependency[RDD[_]])): Array[(Int, Int, _)] = {
+    var compress = Array[(Int, Int, Dependency[RDD[_]])]()
+
+    var w_start = 0
+    var i=0
+    while(i < arr.length) {
+      var back = i-1
+      var moveback = 0
+      var newi = 0
+      var mx = 0
+      var mx_ix = 0
+
+      while(back >= 0) {
+        if(arr(back) == arr(i)) {
+          var check = 0
+
+          while(i+check < arr.length && arr(back+check) == arr(i+check)) {
+            check += 1
+          }
+
+          if(check > mx) {
+            mx_ix = back
+            mx = check
+          }
+        }
+        back -= 1
+      }
+
+      moveback = i-mx_ix
+      newi = i+mx
+
+      i = newi + 1
+      if(i <= arr.length) {
+        compress = compress :+ (mx_ix, mx, arr(i-1))
+      }
+      else {
+        compress = compress :+ (mx_ix, mx, Unit)
+      }
+    }
+    return compress
+  }
+
+
+  // function to decompress dependency representation
+  def lz77_decompress(compressed: Array[(Int, Int, _)]) : Array(Dependency[RDD[_]]) = {
+    var arr = ""
+
+    for(cur <- 0 to compressed.length-1) {
+      var item = compressed(cur)
+      var start = item._1
+      var count = item._2
+      var next = item._3
+
+      for(i <- 0 to count-1) {
+        arr += arr(start+i)
+      } 
+
+      if(next != Unit) {
+        arr += next
+      }
+    }
+    return arr
+  }
+
+
+  // add new dependency. Compress after adding it
+  def add(dep: Dependency[RDD[_]]): Unit = {
+    dependencies = dependencies :+ dep
+    compressed = lz77_compress(dependencies)
+  }
+
+  def get() : Dependency[RDD[_]] = {
+    return lz77_decompress(compressed)
+  }
+}

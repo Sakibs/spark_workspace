@@ -10,12 +10,14 @@ sc = SparkContext(conf = conf)
 print '**** Loading data ****'
 datapath = 'spark_workspace/data/movieLens/u.data'
 
-data = sc.textFile(datapath)
+part = 4
+
+data = sc.textFile(datapath, part)
 ratings = data.map(lambda l: l.split('\t')).map(lambda l: Rating(int(l[0]), int(l[1]), float(l[2])))
 
 print '**** Starting ALS regression ****'
-rank = 100
-numIterations = 200
+rank = 50
+numIterations = 100
 print '**** rank: ' + str(rank) + ', nIters: ' +str(numIterations) + '  ****'
 
 model = ALS.train(ratings, rank, numIterations)
@@ -32,6 +34,7 @@ ratesAndPreds = ratings.map(lambda r: ((r[0], r[1]), r[2])).join(predictions)
 # print ratesAndPreds.collect()
 
 MSE = ratesAndPreds.map(lambda r: (r[1][0] - r[1][1])**2).reduce(lambda x, y: x + y) / ratesAndPreds.count()
+# print MSE.toDebugString()
 
 print("Mean Squared Error = " + str(MSE))
 
